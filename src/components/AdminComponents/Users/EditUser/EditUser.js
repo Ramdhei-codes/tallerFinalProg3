@@ -13,7 +13,7 @@ import {
 import { UserOutlined, LockOutlined, MailOutlined } from "@ant-design/icons";
 import { useDropzone } from "react-dropzone";
 import NoAvatar from "../../../../assets/img/png/user.png";
-import { uploadAvatar, getAvatar } from "../../../../api/user";
+import { uploadAvatar, getAvatar, updateUser } from "../../../../api/user";
 import { getAccessToken } from "../../../../api/auth";
 
 import "./EditUser.scss";
@@ -29,13 +29,13 @@ export default function EditUserForm(props) {
       lastname: user.lastname,
       email: user.email,
       role: user.role,
-      avatar: user.avatar
+      avatar: user.avatar,
     });
   }, [user]);
 
   useEffect(() => {
     if (user.avatar) {
-      getAvatar(user.avatar).then(response => {
+      getAvatar(user.avatar).then((response) => {
         setAvatar(response);
       });
     } else {
@@ -50,7 +50,7 @@ export default function EditUserForm(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [avatar]);
 
-  const updateUser = () => {
+  const editUser = () => {
     const token = getAccessToken();
     let userUpdate = userData;
 
@@ -58,7 +58,7 @@ export default function EditUserForm(props) {
       if (userUpdate.password !== userUpdate.repeatPassword) {
         notification["error"]({
           message:
-            "Passwords must match. Las contraseñas tienen que ser iguales."
+            "Passwords must match. Las contraseñas tienen que ser iguales.",
         });
         return;
       } else {
@@ -69,26 +69,26 @@ export default function EditUserForm(props) {
     if (!userUpdate.name_user || !userUpdate.lastname || !userUpdate.email) {
       notification["error"]({
         message:
-          "Name, lastname and email fields must be filled. El nombre, apellidos e email son obligatorios."
+          "Name, lastname and email fields must be filled. El nombre, apellidos e email son obligatorios.",
       });
       return;
     }
 
     if (typeof userUpdate.avatar === "object") {
-      uploadAvatar(token, userUpdate.avatar, user._id).then(response => {
+      uploadAvatar(token, userUpdate.avatar, user._id).then((response) => {
         userUpdate.avatar = response.avatarName;
-        updateUser(token, userUpdate, user._id).then(result => {
+        updateUser(token, userUpdate, user._id).then((result) => {
           notification["success"]({
-            message: result.message
+            message: result.message,
           });
           setIsVisibleModal(false);
           setReloadUsers(true);
         });
       });
     } else {
-      updateUser(token, userUpdate, user._id).then(result => {
+      updateUser(token, userUpdate, user._id).then((result) => {
         notification["success"]({
-          message: result.message
+          message: result.message,
         });
         setIsVisibleModal(false);
         setReloadUsers(true);
@@ -102,7 +102,7 @@ export default function EditUserForm(props) {
       <EditForm
         userData={userData}
         setUserData={setUserData}
-        updateUser={updateUser}
+        updateUser={editUser}
       />
     </div>
   );
@@ -125,7 +125,7 @@ function UploadAvatar(props) {
   }, [avatar]);
 
   const onDrop = useCallback(
-    acceptedFiles => {
+    (acceptedFiles) => {
       const file = acceptedFiles[0];
       setAvatar({ file, preview: URL.createObjectURL(file) });
     },
@@ -135,7 +135,7 @@ function UploadAvatar(props) {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     accept: "image/jpeg, image/png",
     noKeyboard: true,
-    onDrop
+    onDrop,
   });
 
   return (
@@ -163,7 +163,9 @@ function EditForm(props) {
               prefix={<UserOutlined />}
               placeholder="Name/Nombre"
               value={userData.name_user}
-              onChange={e => setUserData({ ...userData, name_user: e.target.value })}
+              onChange={(e) =>
+                setUserData({ ...userData, name_user: e.target.value })
+              }
             />
           </Form.Item>
         </Col>
@@ -173,7 +175,7 @@ function EditForm(props) {
               prefix={<UserOutlined />}
               placeholder="Lastname/Apellidos"
               value={userData.lastname}
-              onChange={e =>
+              onChange={(e) =>
                 setUserData({ ...userData, lastname: e.target.value })
               }
             />
@@ -188,7 +190,7 @@ function EditForm(props) {
               prefix={<MailOutlined />}
               placeholder="Correo electronico"
               value={userData.email}
-              onChange={e =>
+              onChange={(e) =>
                 setUserData({ ...userData, email: e.target.value })
               }
             />
@@ -198,7 +200,7 @@ function EditForm(props) {
           <Form.Item>
             <Select
               placeholder="Selecciona un rol"
-              onChange={e => setUserData({ ...userData, role: e })}
+              onChange={(e) => setUserData({ ...userData, role: e })}
               value={userData.role}
             >
               <Option value="admin">Administrador</Option>
@@ -208,7 +210,6 @@ function EditForm(props) {
           </Form.Item>
         </Col>
       </Row>
-
 
       <Row gutter={24}>
         <Col span={24}>
@@ -220,7 +221,7 @@ function EditForm(props) {
             />
           </Form.Item>
         </Col>
-        </Row>
+      </Row>
       <Row gutter={24}>
         <Col span={12}>
           <Form.Item>
@@ -228,7 +229,7 @@ function EditForm(props) {
               prefix={<LockOutlined />}
               type="password"
               placeholder="Contraseña"
-              onChange={e =>
+              onChange={(e) =>
                 setUserData({ ...userData, password: e.target.value })
               }
             />
@@ -240,7 +241,7 @@ function EditForm(props) {
               prefix={<LockOutlined />}
               type="password"
               placeholder="Repetir contraseña"
-              onChange={e =>
+              onChange={(e) =>
                 setUserData({ ...userData, repeatPassword: e.target.value })
               }
             />

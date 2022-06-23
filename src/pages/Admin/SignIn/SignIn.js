@@ -3,7 +3,7 @@ import { Layout, Tabs } from "antd";
 import { Routes, Route } from "react-router-dom";
 import Login from "../../../components/AdminComponents/Login";
 import Register from "../../../components/AdminComponents/Register";
-import Logo from "../../../assets/img/png/Logo.png";
+import Logo from "../../../assets/img/png/RAMDHEI.png";
 import "./SigIn.scss";
 import { getAccessToken } from "../../../api/auth";
 
